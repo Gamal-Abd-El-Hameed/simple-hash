@@ -70,3 +70,35 @@ def create_collision(file_name='test-files/5.txt', output_file='hash_output.txt'
         xored_hash_bytes = xored_hash.to_bytes(4, byteorder='big')
         # Append the bytes to 5.txt
         file.write(xored_hash_bytes)
+
+def create_collision2(target='test-files/5.txt',collided='test-files/4.txt'):
+
+    def split_bytes_to_nibbles(byte_array):
+        nibbles = []
+        for byte in byte_array:
+            high_nibble = byte >> 4
+            low_nibble = byte & 0x0F
+            nibbles.extend([high_nibble, low_nibble])
+        return nibbles
+
+
+    target_hash_value = 0
+    if os.path.isfile(target):
+        target_hash_value = compute_file_hash(target)
+
+    collied_hash_value = 0
+    if os.path.isfile(collided):
+        collied_hash_value = compute_file_hash(collided)
+        
+
+    splite_1 = split_bytes_to_nibbles(target_hash_value.to_bytes(4, byteorder='big'))
+    splite_1 = bytes(splite_1)
+
+    splite_2 = split_bytes_to_nibbles(collied_hash_value.to_bytes(4, byteorder='big'))
+    splite_2 = bytes(splite_2)
+    # Write the bytes corresponding to the XORed hash value into 5.txt
+
+    with open(target, 'ab') as file:
+
+        file.write(splite_1)
+        file.write(splite_2)
